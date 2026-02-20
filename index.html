@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Calculadora Geoidal</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 40px auto; max-width: 500px; background-color: #f4f7f6; color: #333; }
+        .contenedor { background: white; padding: 30px; border-radius: 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); margin-bottom: 20px;}
+        h2, h3 { text-align: center; color: #2c3e50; margin-top: 0; }
+        label { font-weight: bold; display: block; margin-top: 15px; }
+        input, select, button { width: 100%; padding: 12px; margin-top: 5px; box-sizing: border-box; border: 1px solid #ccc; border-radius: 5px; font-size: 16px; }
+        button { background-color: #27ae60; color: white; border: none; cursor: pointer; font-weight: bold; margin-top: 20px; }
+        button:hover { background-color: #2ecc71; }
+        button.btn-lote { background-color: #2980b9; }
+        button.btn-lote:hover { background-color: #3498db; }
+        hr { border: 0; height: 1px; background: #ddd; margin: 30px 0; }
+        .resultado { margin-top: 20px; padding: 15px; background-color: #e8f8f5; border-left: 5px solid #1abc9c; border-radius: 5px; font-weight: bold; text-align: center; display: none; font-size: 18px; }
+    </style>
+</head>
+<body>
+
+    <div class="contenedor">
+        <h2>Modelo Geoidal</h2>
+        <label>Elige el Modelo a usar:</label>
+        <select id="modelo">
+            <option value="1">Kriging Ordinario</option>
+            <option value="2">Colocación Mínimos Cuadrados (MCC)</option>
+            <option value="3">Mínima Curvatura (TPS)</option>
+        </select>
+    </div>
+
+    <div class="contenedor">
+        <h3>Opción A: Un Solo Punto</h3>
+        <label>Coordenada Este (X):</label>
+        <input type="number" id="x" placeholder="Ej: 720000">
+        <label>Coordenada Norte (Y):</label>
+        <input type="number" id="y" placeholder="Ej: 9900000">
+        <button onclick="calcularUnico()">Calcular Punto</button>
+        <div id="resultadoUnico" class="resultado"></div>
+    </div>
+
+    <div class="contenedor">
+        <h3>Opción B: Subir Archivo (.txt)</h3>
+        <p style="font-size: 14px; color: #666; text-align: center;">Sube un .txt con 2 columnas (X, Y) separadas por espacio o coma.</p>
+        <input type="file" id="archivoTxt" accept=".txt">
+        <button class="btn-lote" onclick="calcularLote()">Procesar Archivo y Descargar</button>
+        <div id="resultadoLote" class="resultado"></div>
+    </div>
+
+    <script>
+       // Reemplaza esto con el link que te dio Render (el que termina en .onrender.com)
+       const URL_BASE = "https://calculadora-geoidal-ciudad-de-cuenca.onrender.com"; 
+
+       const URL_API_GET = `${URL_BASE}/predecir`;
+       const URL_API_POST = `${URL_BASE}/predecir_lote`;
+
+        // LÓGICA PARA UN PUNTO
+        async function calcularUnico() {
+            const x = document.getElementById("x").value;
+            const y = document.getElementById("y").value;
+            const modelo = document.getElementById("modelo").value;
+            const divRes = document.getElementById("resultadoUnico");
+
+            if(!x || !y) return alert("Ingresa ambas coordenadas");
+            divRes.style.display = "block"; divRes.innerHTML = "⏳ Calculando...";
+
+            try {
+                const respuesta = await fetch(`${URL_API_GET}?x=${x}&y=${y}&modelo=${modelo}`);
+                const datos = await respuesta.json();
+                if (typeof datos.Z_Ondulacion === "number") {
+                    divRes.innerHTML = `✅ Ondulación: <br><span style="font-size: 24px; color: #27ae60;">${datos.Z_Ondulacion.toFixed(4)} m</span>`;
+                } else {
+                    divRes.innerHTML = `⚠️ ${datos.Z_Ondulacion}`;
+                }
+            } catch (error) {
+                divRes.innerHTML = "❌ Error de conexión con RStudio.";
+            }
+        }
+
+        // LÓGICA PARA ARCHIVO TXT
+        async function calcularLote() {
+            const fileInput = document.getElementById('archivoTxt');
+            const modelo = document.getElementById('modelo').value;
+            const divRes = document.getElementById("resultadoLote");
+
+            if (!fileInput.files.length) return alert("Por favor, selecciona un archivo .txt");
+
+            divRes.style.display = "block"; divRes.innerHTML = "⏳ Leyendo y procesando archivo...";
+
+            const file = fileInput.files[0];
+            const reader = new FileReader();
+
+            reader.onload = async function(e) {
+                const text = e.target.result;
+                const lines = text.trim().split('\n');
+                const puntos = [];
+
+                // Leer el archivo línea por línea
+                for(let line of lines) {
+                    if (line.trim() === "") continue;
+                    // Separar por espacios, tabs o comas
+                    const parts = line.trim().split(/[\s,]+/);
+                    if(parts.length >= 2) {
+                        const x = parseFloat(parts[0]);
+                        const y = parseFloat(parts[1]);
+                        // Ignorar líneas que tengan letras en vez de números (ej. encabezados)
+                        if(!isNaN(x) && !isNaN(y)) {
+                            puntos.push({x: x, y: y});
+                        }
+                    }
+                }
+
+                if(puntos.length === 0) return alert("No se encontraron coordenadas válidas en el archivo.");
+
+                try {
+                    // Enviar los puntos a RStudio en formato JSON
+                    const response = await fetch(`${URL_API_POST}?modelo=${modelo}`, {
+                        method: 'POST',
+                        headers: {'Content-Type': 'application/json'},
+                        body: JSON.stringify(puntos)
+                    });
+                    
+                    const data = await response.json(); 
+
+                    // Construir el archivo de respuesta .txt
+                    let outText = "X\tY\tZ_Ondulacion\n";
+                    data.forEach(row => {
+                       outText += `${row.x}\t${row.y}\t${row.z_ondulacion.toFixed(4)}\n`;
+                    });
+
+                    // Forzar la descarga en el navegador
+                    const blob = new Blob([outText], {type: 'text/plain'});
+                    const url = window.URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = `Ondulacion_Resultados_Modelo${modelo}.txt`;
+                    document.body.appendChild(a);
+                    a.click();
+                    document.body.removeChild(a);
+
+                    divRes.innerHTML = "✅ ¡Cálculo completado! El archivo se ha descargado.";
+                    
+                } catch (error) {
+                    divRes.innerHTML = "❌ Error al procesar el archivo. Revisa RStudio.";
+                    console.error(error);
+                }
+            };
+            
+            reader.readAsText(file); // Activa la lectura del archivo
+        }
+    </script>
+</body>
+</html>
