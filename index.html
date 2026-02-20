@@ -2,26 +2,134 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Calculadora Geoidal</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Predecir Ondulación Geoidal | ESPE</title>
     <style>
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 40px auto; max-width: 500px; background-color: #f4f7f6; color: #333; }
-        .contenedor { background: white; padding: 30px; border-radius: 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); margin-bottom: 20px;}
-        h2, h3 { text-align: center; color: #2c3e50; margin-top: 0; }
-        label { font-weight: bold; display: block; margin-top: 15px; }
-        input, select, button { width: 100%; padding: 12px; margin-top: 5px; box-sizing: border-box; border: 1px solid #ccc; border-radius: 5px; font-size: 16px; }
-        button { background-color: #27ae60; color: white; border: none; cursor: pointer; font-weight: bold; margin-top: 20px; }
-        button:hover { background-color: #2ecc71; }
-        button.btn-lote { background-color: #2980b9; }
-        button.btn-lote:hover { background-color: #3498db; }
-        hr { border: 0; height: 1px; background: #ddd; margin: 30px 0; }
-        .resultado { margin-top: 20px; padding: 15px; background-color: #e8f8f5; border-left: 5px solid #1abc9c; border-radius: 5px; font-weight: bold; text-align: center; display: none; font-size: 18px; }
+        /* Fondo verde muy bajito como pediste */
+        body { 
+            font-family: 'Segoe UI', Arial, sans-serif; 
+            margin: 0; 
+            padding: 40px 20px;
+            background-color: #f4f9f4; 
+            color: #2c3e50; 
+            line-height: 1.6;
+        }
+
+        .header-espe {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .header-espe img {
+            width: 320px; 
+            height: auto;
+            margin-bottom: 20px;
+        }
+
+        .titulo-principal {
+            color: #1a4a1a; 
+            font-size: 32px;
+            margin-bottom: 10px;
+            font-weight: 800;
+        }
+
+        .subtitulo-proyecto {
+            color: #445a44;
+            max-width: 800px;
+            margin: 0 auto;
+            font-size: 16px;
+            font-weight: 400;
+        }
+
+        .contenedor { 
+            background: #ffffff; 
+            padding: 35px; 
+            border-radius: 15px; 
+            box-shadow: 0 10px 25px rgba(0,0,0,0.05); 
+            margin: 0 auto 30px auto;
+            max-width: 650px;
+            border: 1px solid #e0e6e0;
+        }
+
+        .contenedor-verde {
+            border-top: 6px solid #1a4a1a;
+        }
+
+        .contenedor-azul {
+            border-top: 6px solid #2980b9;
+        }
+
+        h3 { 
+            color: #1a4a1a; 
+            margin-top: 0; 
+            font-size: 20px;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 15px;
+            margin-bottom: 20px;
+        }
+        
+        label { font-weight: 600; display: block; margin-top: 15px; color: #34495e; }
+        
+        input, select { 
+            width: 100%; padding: 14px; margin-top: 8px; 
+            box-sizing: border-box; border: 1px solid #dcdcdc; 
+            border-radius: 8px; font-size: 15px; 
+            background-color: #fafafa;
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: #1a4a1a;
+            background-color: #fff;
+        }
+
+        button { 
+            width: 100%; padding: 15px; border: none; 
+            border-radius: 8px; font-size: 16px; font-weight: bold; 
+            cursor: pointer; transition: all 0.3s ease;
+            margin-top: 25px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .btn-verde { background-color: #1a4a1a; color: white; }
+        .btn-verde:hover { background-color: #2d6a2d; box-shadow: 0 4px 12px rgba(26,74,26,0.2); }
+
+        .btn-azul { background-color: #2980b9; color: white; }
+        .btn-azul:hover { background-color: #3498db; box-shadow: 0 4px 12px rgba(41,128,185,0.2); }
+
+        .resultado { 
+            margin-top: 25px; padding: 20px; 
+            background-color: #f0fdf4; border: 1px solid #c6f6d5; 
+            border-radius: 10px; font-weight: bold; 
+            text-align: center; display: none; 
+        }
+
+        .resultado-texto { font-size: 16px; color: #2f855a; margin-bottom: 5px; }
+        .resultado-valor { font-size: 28px; color: #1a4a1a; display: block; }
+
+        footer {
+            text-align: center;
+            font-size: 13px;
+            color: #888;
+            margin-top: 50px;
+            padding-bottom: 30px;
+        }
     </style>
 </head>
 <body>
 
-    <div class="contenedor">
-        <h2>Modelo Geoidal</h2>
-        <label>Elige el Modelo a usar:</label>
+    <div class="header-espe">
+        <img src="https://www.espe.edu.ec/wp-content/uploads/2018/12/logo-espe.png" alt="Universidad de las Fuerzas Armadas ESPE">
+        <h1 class="titulo-principal">Predecir Ondulación Geoidal</h1>
+        <p class="subtitulo-proyecto">
+            Generación de un modelo de ondulación geoidal para la ciudad de Cuenca utilizando técnicas determinísticas y geoestadísticas
+        </p>
+    </div>
+
+    <div class="contenedor contenedor-verde">
+        <h3>Configuración del Análisis</h3>
+        <label>Algoritmo de Interpolación:</label>
         <select id="modelo">
             <option value="1">Kriging Ordinario</option>
             <option value="2">Colocación Mínimos Cuadrados (MCC)</option>
@@ -29,63 +137,79 @@
         </select>
     </div>
 
-    <div class="contenedor">
-        <h3>Opción A: Un Solo Punto</h3>
-        <label>Coordenada Este (X):</label>
-        <input type="number" id="x" placeholder="Ej: 720000">
-        <label>Coordenada Norte (Y):</label>
-        <input type="number" id="y" placeholder="Ej: 9900000">
-        <button onclick="calcularUnico()">Calcular Punto</button>
+    <div class="contenedor contenedor-verde">
+        <h3>Selección de Punto de Interpolación</h3>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+            <div>
+                <label>Coordenada Este (X):</label>
+                <input type="number" id="x" placeholder="Ej: 720000">
+            </div>
+            <div>
+                <label>Coordenada Norte (Y):</label>
+                <input type="number" id="y" placeholder="Ej: 9900000">
+            </div>
+        </div>
+        <button class="btn-verde" onclick="calcularUnico()">Calcular Ondulación (N)</button>
         <div id="resultadoUnico" class="resultado"></div>
     </div>
 
-    <div class="contenedor">
-        <h3>Opción B: Subir Archivo (.txt)</h3>
-        <p style="font-size: 14px; color: #666; text-align: center;">Sube un .txt con 2 columnas (X, Y) separadas por espacio o coma.</p>
+    <div class="contenedor contenedor-azul">
+        <h3>Procesamiento por Lote (.txt)</h3>
+        <p style="font-size: 14px; color: #666; background: #f8f9fa; padding: 10px; border-radius: 5px; border-left: 3px solid #2980b9;">
+            Cargue un archivo de texto con columnas de coordenadas <strong>X</strong> e <strong>Y</strong> separadas por espacios.
+        </p>
         <input type="file" id="archivoTxt" accept=".txt">
-        <button class="btn-lote" onclick="calcularLote()">Procesar Archivo y Descargar</button>
+        <button class="btn-azul" onclick="calcularLote()">Procesar Archivo y Descargar</button>
         <div id="resultadoLote" class="resultado"></div>
     </div>
 
+    <footer>
+        <strong>UNIVERSIDAD DE LAS FUERZAS ARMADAS ESPE</strong><br>
+        Departamento de Ciencias de la Tierra y la Construcción<br>
+        Ingeniería Geográfica y del Medio Ambiente
+    </footer>
+
     <script>
-       // Reemplaza esto con el link que te dio Render (el que termina en .onrender.com)
-       const URL_BASE = "https://calculadora-geoidal-ciudad-de-cuenca.onrender.com"; 
+        const URL_BASE = "https://calculadora-geoidal-ciudad-de-cuenca.onrender.com"; 
 
-       const URL_API_GET = `${URL_BASE}/predecir`;
-       const URL_API_POST = `${URL_BASE}/predecir_lote`;
+        const URL_API_GET = `${URL_BASE}/predecir`;
+        const URL_API_POST = `${URL_BASE}/predecir_lote`;
 
-        // LÓGICA PARA UN PUNTO
         async function calcularUnico() {
             const x = document.getElementById("x").value;
             const y = document.getElementById("y").value;
             const modelo = document.getElementById("modelo").value;
             const divRes = document.getElementById("resultadoUnico");
 
-            if(!x || !y) return alert("Ingresa ambas coordenadas");
-            divRes.style.display = "block"; divRes.innerHTML = "⏳ Calculando...";
+            if(!x || !y) return alert("Por favor, complete ambas coordenadas.");
+            divRes.style.display = "block"; 
+            divRes.innerHTML = "<span style='color: #666;'>⏳ Procesando datos en el servidor...</span>";
 
             try {
                 const respuesta = await fetch(`${URL_API_GET}?x=${x}&y=${y}&modelo=${modelo}`);
                 const datos = await respuesta.json();
                 if (typeof datos.Z_Ondulacion === "number") {
-                    divRes.innerHTML = `✅ Ondulación: <br><span style="font-size: 24px; color: #27ae60;">${datos.Z_Ondulacion.toFixed(4)} m</span>`;
+                    divRes.innerHTML = `
+                        <div class="resultado-texto">Cálculo completado exitosamente:</div>
+                        <strong class="resultado-valor">N = ${datos.Z_Ondulacion.toFixed(4)} m</strong>
+                    `;
                 } else {
-                    divRes.innerHTML = `⚠️ ${datos.Z_Ondulacion}`;
+                    divRes.innerHTML = `<span style="color: #c0392b;">${datos.Z_Ondulacion}</span>`;
                 }
             } catch (error) {
-                divRes.innerHTML = "❌ Error de conexión con RStudio.";
+                divRes.innerHTML = "<span style='color: #c0392b;'>Error: El servicio de predicción no está disponible.</span>";
             }
         }
 
-        // LÓGICA PARA ARCHIVO TXT
         async function calcularLote() {
             const fileInput = document.getElementById('archivoTxt');
             const modelo = document.getElementById('modelo').value;
             const divRes = document.getElementById("resultadoLote");
 
-            if (!fileInput.files.length) return alert("Por favor, selecciona un archivo .txt");
+            if (!fileInput.files.length) return alert("Seleccione un archivo .txt para continuar.");
 
-            divRes.style.display = "block"; divRes.innerHTML = "⏳ Leyendo y procesando archivo...";
+            divRes.style.display = "block"; 
+            divRes.innerHTML = "<span style='color: #2980b9;'>⏳ Ejecutando procesamiento masivo...</span>";
 
             const file = fileInput.files[0];
             const reader = new FileReader();
@@ -95,25 +219,21 @@
                 const lines = text.trim().split('\n');
                 const puntos = [];
 
-                // Leer el archivo línea por línea
                 for(let line of lines) {
                     if (line.trim() === "") continue;
-                    // Separar por espacios, tabs o comas
                     const parts = line.trim().split(/[\s,]+/);
                     if(parts.length >= 2) {
                         const x = parseFloat(parts[0]);
                         const y = parseFloat(parts[1]);
-                        // Ignorar líneas que tengan letras en vez de números (ej. encabezados)
                         if(!isNaN(x) && !isNaN(y)) {
                             puntos.push({x: x, y: y});
                         }
                     }
                 }
 
-                if(puntos.length === 0) return alert("No se encontraron coordenadas válidas en el archivo.");
+                if(puntos.length === 0) return alert("El archivo no contiene datos válidos.");
 
                 try {
-                    // Enviar los puntos a RStudio en formato JSON
                     const response = await fetch(`${URL_API_POST}?modelo=${modelo}`, {
                         method: 'POST',
                         headers: {'Content-Type': 'application/json'},
@@ -122,31 +242,28 @@
                     
                     const data = await response.json(); 
 
-                    // Construir el archivo de respuesta .txt
                     let outText = "X\tY\tZ_Ondulacion\n";
                     data.forEach(row => {
                        outText += `${row.x}\t${row.y}\t${row.z_ondulacion.toFixed(4)}\n`;
                     });
 
-                    // Forzar la descarga en el navegador
                     const blob = new Blob([outText], {type: 'text/plain'});
                     const url = window.URL.createObjectURL(blob);
                     const a = document.createElement('a');
                     a.href = url;
-                    a.download = `Ondulacion_Resultados_Modelo${modelo}.txt`;
+                    a.download = `Resultados_Calculadora_Geoidal.txt`;
                     document.body.appendChild(a);
                     a.click();
                     document.body.removeChild(a);
 
-                    divRes.innerHTML = "✅ ¡Cálculo completado! El archivo se ha descargado.";
+                    divRes.innerHTML = "<span style='color: #2980b9;'>✅ Archivo procesado y descargado.</span>";
                     
                 } catch (error) {
-                    divRes.innerHTML = "❌ Error al procesar el archivo. Revisa RStudio.";
-                    console.error(error);
+                    divRes.innerHTML = "<span style='color: #c0392b;'>Error al procesar el archivo por lote.</span>";
                 }
             };
             
-            reader.readAsText(file); // Activa la lectura del archivo
+            reader.readAsText(file);
         }
     </script>
 </body>
