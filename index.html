@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Predecir Ondulación Geoidal | ESPE</title>
     <style>
-        /* Fondo verde muy bajito como pediste */
         body { 
             font-family: 'Segoe UI', Arial, sans-serif; 
             margin: 0; 
@@ -14,33 +13,10 @@
             color: #2c3e50; 
             line-height: 1.6;
         }
-
-        .header-espe {
-            text-align: center;
-            margin-bottom: 40px;
-        }
-
-        .header-espe img {
-            width: 320px; 
-            height: auto;
-            margin-bottom: 20px;
-        }
-
-        .titulo-principal {
-            color: #1a4a1a; 
-            font-size: 32px;
-            margin-bottom: 10px;
-            font-weight: 800;
-        }
-
-        .subtitulo-proyecto {
-            color: #445a44;
-            max-width: 800px;
-            margin: 0 auto;
-            font-size: 16px;
-            font-weight: 400;
-        }
-
+        .header-espe { text-align: center; margin-bottom: 40px; }
+        .header-espe img { width: 320px; height: auto; margin-bottom: 20px; }
+        .titulo-principal { color: #1a4a1a; font-size: 32px; margin-bottom: 10px; font-weight: 800; }
+        .subtitulo-proyecto { color: #445a44; max-width: 800px; margin: 0 auto; font-size: 16px; font-weight: 400; }
         .contenedor { 
             background: #ffffff; 
             padding: 35px; 
@@ -50,39 +26,16 @@
             max-width: 650px;
             border: 1px solid #e0e6e0;
         }
-
-        .contenedor-verde {
-            border-top: 6px solid #1a4a1a;
-        }
-
-        .contenedor-azul {
-            border-top: 6px solid #2980b9;
-        }
-
-        h3 { 
-            color: #1a4a1a; 
-            margin-top: 0; 
-            font-size: 20px;
-            border-bottom: 1px solid #eee;
-            padding-bottom: 15px;
-            margin-bottom: 20px;
-        }
-        
+        .contenedor-verde { border-top: 6px solid #1a4a1a; }
+        .contenedor-azul { border-top: 6px solid #2980b9; }
+        h3 { color: #1a4a1a; margin-top: 0; font-size: 20px; border-bottom: 1px solid #eee; padding-bottom: 15px; margin-bottom: 20px; }
         label { font-weight: 600; display: block; margin-top: 15px; color: #34495e; }
-        
         input, select { 
             width: 100%; padding: 14px; margin-top: 8px; 
             box-sizing: border-box; border: 1px solid #dcdcdc; 
             border-radius: 8px; font-size: 15px; 
             background-color: #fafafa;
         }
-
-        input:focus, select:focus {
-            outline: none;
-            border-color: #1a4a1a;
-            background-color: #fff;
-        }
-
         button { 
             width: 100%; padding: 15px; border: none; 
             border-radius: 8px; font-size: 16px; font-weight: bold; 
@@ -91,39 +44,25 @@
             text-transform: uppercase;
             letter-spacing: 1px;
         }
-
         .btn-verde { background-color: #1a4a1a; color: white; }
         .btn-verde:hover { background-color: #2d6a2d; box-shadow: 0 4px 12px rgba(26,74,26,0.2); }
-
         .btn-azul { background-color: #2980b9; color: white; }
         .btn-azul:hover { background-color: #3498db; box-shadow: 0 4px 12px rgba(41,128,185,0.2); }
-
         .resultado { 
             margin-top: 25px; padding: 20px; 
             background-color: #f0fdf4; border: 1px solid #c6f6d5; 
-            border-radius: 10px; font-weight: bold; 
-            text-align: center; display: none; 
+            border-radius: 10px; text-align: center; display: none; 
         }
-
-        .resultado-texto { font-size: 16px; color: #2f855a; margin-bottom: 5px; }
-        .resultado-valor { font-size: 28px; color: #1a4a1a; display: block; }
-
-        footer {
-            text-align: center;
-            font-size: 13px;
-            color: #888;
-            margin-top: 50px;
-            padding-bottom: 30px;
-        }
+        .resultado-valor { font-size: 28px; color: #1a4a1a; display: block; font-weight: bold; }
+        .incertidumbre-valor { font-size: 16px; color: #666; margin-top: 5px; }
+        footer { text-align: center; font-size: 13px; color: #888; margin-top: 50px; padding-bottom: 30px; }
     </style>
 </head>
 <body>
 
     <div class="header-espe">
-        <img src="https://www.espe.edu.ec/wp-content/uploads/2023/03/espe.png" alt="Universidad de las Fuerzas Armadas ESPE" style="max-width: 400px;">
-        
-        <h1 class="titulo-principal">Predicción Ondulación Geoidal para la Ciudad de Cuenca</h1>
-        
+        <img src="https://www.espe.edu.ec/wp-content/uploads/2018/12/logo-espe.png" alt="Universidad de las Fuerzas Armadas ESPE">
+        <h1 class="titulo-principal">Predecir Ondulación Geoidal</h1>
         <p class="subtitulo-proyecto">
             Generación de un modelo de ondulación geoidal para la ciudad de Cuenca utilizando técnicas determinísticas y geoestadísticas
         </p>
@@ -158,7 +97,7 @@
     <div class="contenedor contenedor-azul">
         <h3>Procesamiento por Lote (.txt)</h3>
         <p style="font-size: 14px; color: #666; background: #f8f9fa; padding: 10px; border-radius: 5px; border-left: 3px solid #2980b9;">
-            Cargue un archivo de texto con columnas de coordenadas <strong>X</strong> e <strong>Y</strong> separadas por espacios.
+            Cargue un archivo .txt con coordenadas X Y. Se devolverá un archivo con la ondulación e incertidumbre.
         </p>
         <input type="file" id="archivoTxt" accept=".txt">
         <button class="btn-azul" onclick="calcularLote()">Procesar Archivo y Descargar</button>
@@ -168,15 +107,12 @@
     <footer>
         <strong>UNIVERSIDAD DE LAS FUERZAS ARMADAS ESPE</strong><br>
         Departamento de Ciencias de la Tierra y la Construcción<br>
-        Ingeniería Geoespacial<br>
-        Autores: Sebastián Borja, Alejandra Manobanda y Lida Vegay
+        Ingeniería Geográfica y del Medio Ambiente
     </footer>
 
     <script>
+        // Asegúrate de que esta URL coincida con tu servicio en Render
         const URL_BASE = "https://calculadora-geoidal-ciudad-de-cuenca.onrender.com"; 
-
-        const URL_API_GET = `${URL_BASE}/predecir`;
-        const URL_API_POST = `${URL_BASE}/predecir_lote`;
 
         async function calcularUnico() {
             const x = document.getElementById("x").value;
@@ -186,21 +122,23 @@
 
             if(!x || !y) return alert("Por favor, complete ambas coordenadas.");
             divRes.style.display = "block"; 
-            divRes.innerHTML = "<span style='color: #666;'>⏳ Procesando datos en el servidor...</span>";
+            divRes.innerHTML = "<span style='color: #666;'>⏳ Procesando...</span>";
 
             try {
-                const respuesta = await fetch(`${URL_API_GET}?x=${x}&y=${y}&modelo=${modelo}`);
+                const respuesta = await fetch(`${URL_BASE}/predecir?x=${x}&y=${y}&modelo=${modelo}`);
                 const datos = await respuesta.json();
-                if (typeof datos.Z_Ondulacion === "number") {
+                
+                if (datos.Z_Ondulacion) {
                     divRes.innerHTML = `
-                        <div class="resultado-texto">Cálculo completado exitosamente:</div>
-                        <strong class="resultado-valor">N = ${datos.Z_Ondulacion.toFixed(4)} m</strong>
+                        <div style="color: #2f855a; font-weight:600;">Resultado:</div>
+                        <span class="resultado-valor">N = ${datos.Z_Ondulacion.toFixed(4)} m</span>
+                        <div class="incertidumbre-valor">Incertidumbre (σ): ± ${datos.Error_Incertidumbre ? datos.Error_Incertidumbre.toFixed(4) : "N/A"} m</div>
                     `;
                 } else {
-                    divRes.innerHTML = `<span style="color: #c0392b;">${datos.Z_Ondulacion}</span>`;
+                    divRes.innerHTML = `<span style="color: #c0392b;">${datos.error || "Error en el cálculo"}</span>`;
                 }
             } catch (error) {
-                divRes.innerHTML = "<span style='color: #c0392b;'>Error: El servicio de predicción no está disponible.</span>";
+                divRes.innerHTML = "<span style='color: #c0392b;'>Error de conexión con la API.</span>";
             }
         }
 
@@ -209,68 +147,47 @@
             const modelo = document.getElementById('modelo').value;
             const divRes = document.getElementById("resultadoLote");
 
-            if (!fileInput.files.length) return alert("Seleccione un archivo .txt para continuar.");
+            if (!fileInput.files.length) return alert("Seleccione un archivo.");
 
             divRes.style.display = "block"; 
-            divRes.innerHTML = "<span style='color: #2980b9;'>⏳ Ejecutando procesamiento masivo...</span>";
+            divRes.innerHTML = "<span>⏳ Procesando lote...</span>";
 
             const file = fileInput.files[0];
             const reader = new FileReader();
 
             reader.onload = async function(e) {
-                const text = e.target.result;
-                const lines = text.trim().split('\n');
-                const puntos = [];
-
-                for(let line of lines) {
-                    if (line.trim() === "") continue;
-                    const parts = line.trim().split(/[\s,]+/);
-                    if(parts.length >= 2) {
-                        const x = parseFloat(parts[0]);
-                        const y = parseFloat(parts[1]);
-                        if(!isNaN(x) && !isNaN(y)) {
-                            puntos.push({x: x, y: y});
-                        }
-                    }
-                }
-
-                if(puntos.length === 0) return alert("El archivo no contiene datos válidos.");
+                const lines = e.target.result.trim().split('\n');
+                const puntos = lines.map(l => {
+                    const p = l.trim().split(/[\s,]+/);
+                    return {x: parseFloat(p[0]), y: parseFloat(p[1])};
+                }).filter(p => !isNaN(p.x) && !isNaN(p.y));
 
                 try {
-                    const response = await fetch(`${URL_API_POST}?modelo=${modelo}`, {
+                    const response = await fetch(`${URL_BASE}/predecir_lote?modelo=${modelo}`, {
                         method: 'POST',
                         headers: {'Content-Type': 'application/json'},
                         body: JSON.stringify(puntos)
                     });
                     
                     const data = await response.json(); 
-
-                    let outText = "X\tY\tZ_Ondulacion\n";
+                    let outText = "X\tY\tN_Ondulacion\tSigma_Error\n";
                     data.forEach(row => {
-                       outText += `${row.x}\t${row.y}\t${row.z_ondulacion.toFixed(4)}\n`;
+                        outText += `${row.x}\t${row.y}\t${row.z_ondulacion}\t${row.incertidumbre}\n`;
                     });
 
                     const blob = new Blob([outText], {type: 'text/plain'});
                     const url = window.URL.createObjectURL(blob);
                     const a = document.createElement('a');
                     a.href = url;
-                    a.download = `Resultados_Calculadora_Geoidal.txt`;
-                    document.body.appendChild(a);
+                    a.download = `Resultados_Geoid_Modelo_${modelo}.txt`;
                     a.click();
-                    document.body.removeChild(a);
-
-                    divRes.innerHTML = "<span style='color: #2980b9;'>✅ Archivo procesado y descargado.</span>";
-                    
+                    divRes.innerHTML = "<span style='color: #2980b9;'>✅ Descarga completada.</span>";
                 } catch (error) {
-                    divRes.innerHTML = "<span style='color: #c0392b;'>Error al procesar el archivo por lote.</span>";
+                    divRes.innerHTML = "<span style='color: #c0392b;'>Error en procesamiento masivo.</span>";
                 }
             };
-            
             reader.readAsText(file);
         }
     </script>
 </body>
 </html>
-
-
-
