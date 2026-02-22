@@ -114,34 +114,40 @@
         // Asegúrate de que esta URL coincida con tu servicio en Render
         const URL_BASE = "https://calculadora-geoidal-ciudad-de-cuenca.onrender.com"; 
 
-        async function calcularUnico() {
-            const x = document.getElementById("x").value;
-            const y = document.getElementById("y").value;
-            const modelo = document.getElementById("modelo").value;
-            const divRes = document.getElementById("resultadoUnico");
+       async function calcularUnico() {
+    const x = document.getElementById("x").value;
+    const y = document.getElementById("y").value;
+    const modelo = document.getElementById("modelo").value;
+    const divRes = document.getElementById("resultadoUnico");
 
-            if(!x || !y) return alert("Por favor, complete ambas coordenadas.");
-            divRes.style.display = "block"; 
-            divRes.innerHTML = "<span style='color: #666;'>⏳ Procesando...</span>";
+    if(!x || !y) return alert("Por favor, complete ambas coordenadas.");
+    
+    divRes.style.display = "block"; 
+    divRes.innerHTML = "<span style='color: #666;'>⏳ Procesando...</span>";
 
-            try {
-                const respuesta = await fetch(`${URL_BASE}/predecir?x=${x}&y=${y}&modelo=${modelo}`);
-                const datos = await respuesta.json();
-                
-                if (datos.Z_Ondulacion) {
-                    divRes.innerHTML = `
-                        <div style="color: #2f855a; font-weight:600;">Resultado:</div>
-                        <span class="resultado-valor">N = ${datos.Z_Ondulacion.toFixed(4)} m</span>
-                        <div class="incertidumbre-valor">Incertidumbre (σ): ± ${datos.Error_Incertidumbre ? datos.Error_Incertidumbre.toFixed(4) : "N/A"} m</div>
-                    `;
-                } else {
-                    divRes.innerHTML = `<span style="color: #c0392b;">${datos.error || "Error en el cálculo"}</span>`;
-                }
-            } catch (error) {
-                divRes.innerHTML = "<span style='color: #c0392b;'>Error de conexión con la API.</span>";
-            }
+    try {
+        const respuesta = await fetch(`${URL_BASE}/predecir?x=${x}&y=${y}&modelo=${modelo}`);
+        const datos = await respuesta.json();
+        
+        // Verificamos si la respuesta tiene el dato (Z_Ondulacion viene de tu plumber.R)
+        if (datos.Z_Ondulacion !== undefined && datos.Z_Ondulacion !== null) {
+            divRes.innerHTML = `
+                <div style="color: #2f855a; font-weight:600; margin-bottom:5px;">Resultado Exitoso:</div>
+                <span class="resultado-valor" style="font-size: 28px; color: #1a4a1a; font-weight: bold; display: block;">
+                    N = ${parseFloat(datos.Z_Ondulacion).toFixed(4)} m
+                </span>
+                <div class="incertidumbre-valor" style="font-size: 15px; color: #666; margin-top: 10px; border-top: 1px solid #ddd; padding-top: 5px;">
+                    Incertidumbre (σ): ± ${datos.Error_Incertidumbre ? parseFloat(datos.Error_Incertidumbre).toFixed(4) : "N/A"} m
+                </div>
+            `;
+        } else {
+            divRes.innerHTML = `<span style="color: #c0392b;">Punto fuera de los límites del modelo.</span>`;
         }
-
+    } catch (error) {
+        console.error("Error:", error);
+        divRes.innerHTML = "<span style='color: #c0392b;'>Error al interpretar la respuesta del servidor.</span>";
+    }
+}
         async function calcularLote() {
             const fileInput = document.getElementById('archivoTxt');
             const modelo = document.getElementById('modelo').value;
@@ -191,4 +197,5 @@
     </script>
 </body>
 </html>
+
 
